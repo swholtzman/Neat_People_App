@@ -39,7 +39,7 @@ fun UserInfoPanel(userName: String) {
     ) {
         Text(
             text = userName,
-            style = MaterialTheme.typography.headlineSmall, // Larger text size
+            style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onPrimary
         )
         Column(

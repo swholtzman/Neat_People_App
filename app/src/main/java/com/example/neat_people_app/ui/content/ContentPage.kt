@@ -17,7 +17,10 @@ import com.example.neat_people_app.ui.content.components.UserInfoPanel
 
 @Composable
 fun ContentPage(dynamoAccessService: DynamoAccessService, userName: String = "Unnamed User") {
-    val viewModel: ContentViewModel = viewModel(factory = ContentViewModelFactory(dynamoAccessService))
+    val viewModel: ContentViewModel = viewModel(
+        factory = ContentViewModelFactory(dynamoAccessService)
+    )
+
     val items = viewModel.items
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -38,7 +41,9 @@ fun ContentPage(dynamoAccessService: DynamoAccessService, userName: String = "Un
     }
 }
 
-class ContentViewModelFactory(private val dynamoAccessService: DynamoAccessService) : ViewModelProvider.Factory {
+class ContentViewModelFactory(private val dynamoAccessService: DynamoAccessService) :
+    ViewModelProvider.Factory {
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ContentViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

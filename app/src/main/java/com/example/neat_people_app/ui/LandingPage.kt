@@ -128,7 +128,7 @@ fun LandingContent(onContinue: () -> Unit) {
         }
 
         Button(
-            onClick = { /* TODO: Add action if needed */ },
+            onClick = { /* TODO: add contact form for potential clients */ },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)

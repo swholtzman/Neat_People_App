@@ -18,7 +18,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class CognitoAuthService(context: Context) {
-    // Initialize Cognito User Pool; Use Secrets.kt constants
+    // init Cognito User Pool; use Secrets.kt constants
     val userPool: CognitoUserPool = CognitoUserPool(
         context,
         Secrets.COGNITO_USER_POOL_ID,
@@ -27,7 +27,7 @@ class CognitoAuthService(context: Context) {
         Regions.fromName(Secrets.DYNAMO_DB_REGION)
     )
 
-    // Initialize EncryptedSharedPreferences
+    // init EncryptedSharedPreferences
     private val sharedPreferences = EncryptedSharedPreferences.create(
         context,
         "secure_prefs",
@@ -38,7 +38,7 @@ class CognitoAuthService(context: Context) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    // Store the session token after login
+    // store session token after login; persist login
     fun storeSessionToken(session: CognitoUserSession) {
         sharedPreferences.edit()
             .putString("access_token", session.accessToken.jwtToken)
@@ -46,12 +46,12 @@ class CognitoAuthService(context: Context) {
             .apply()
     }
 
-    // Retrieve the access token
+    // retrieve access token; persist login
     fun getSessionToken(): String? {
         return sharedPreferences.getString("access_token", null)
     }
 
-    // Clear the session token on logout (optional)
+    // clear session token on logout (optional)
     fun clearSessionToken() {
         sharedPreferences.edit()
             .remove("access_token")
@@ -76,7 +76,8 @@ class CognitoAuthService(context: Context) {
                 continuation.resume(Result.success(Unit))
             }
             override fun onFailure(exception: Exception?) {
-                continuation.resume(Result.failure(exception ?: Exception("Unknown error")))
+                continuation.resume(Result.failure(exception ?:
+                Exception("Unknown error")))
             }
         })
     }
@@ -96,7 +97,8 @@ class CognitoAuthService(context: Context) {
                 authenticationContinuation?.continueTask()
             }
             override fun onFailure(exception: Exception?) {
-                continuation.resume(Result.failure(exception ?: Exception("Unknown error")))
+                continuation.resume(Result.failure(exception ?:
+                Exception("Unknown error")))
             }
             override fun getMFACode(continuation: MultiFactorAuthenticationContinuation?) {
                 continuation?.continueTask()

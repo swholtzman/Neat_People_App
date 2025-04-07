@@ -60,7 +60,7 @@ fun BottomNav(
                         .weight(1f)
                         .clickable {
                             if (isSelected) {
-                                // Do nothing or refresh the current screen (optional)
+                                // do nothing or refresh current screen; unsure as of now
                             } else if (label == "content") {
                                 onScreenSelected(label)
                             } else {
@@ -72,11 +72,16 @@ fun BottomNav(
                     Icon(
                         imageVector = icon,
                         contentDescription = label,
-                        tint = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onPrimary
+                        tint = if (isSelected)
+                            MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onPrimary
                     )
                     Text(
                         text = label,
-                        color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onPrimary,
+                        color = if (isSelected)
+                            MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onPrimary,
+
                         fontFamily = JostFontFamily,
                         fontSize = 12.sp
                     )

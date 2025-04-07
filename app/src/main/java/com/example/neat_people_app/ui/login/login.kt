@@ -141,9 +141,11 @@ class LoginViewModel(
                 when {
                     exception?.message?.contains("UserNotConfirmedException") == true -> {
                         showVerificationInput = true
-                        errorMessage = "Your account is not confirmed. Please enter the verification code sent to your email."
+                        errorMessage = "Your account is not confirmed. " +
+                                "Please enter the verification code sent to your email."
                     }
-                    exception?.message?.contains("Incorrect username or password") == true -> {
+                    exception?.message?.contains("Incorrect username or password")
+                            == true -> {
                         errorMessage = "Incorrect email or password. Please try again."
                     }
                     else -> {

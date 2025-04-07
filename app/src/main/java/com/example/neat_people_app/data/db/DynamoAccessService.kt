@@ -39,13 +39,19 @@ class DynamoAccessService(context: Context) {
         Log.d("DynamoAccessService", "Using region: ${Secrets.DYNAMO_DB_REGION}")
     }
 
-    val dynamoDBMapper = DynamoDBMapper(dynamoDBClient)
+    private val dynamoDBMapper = DynamoDBMapper(dynamoDBClient)
 
     fun createItem(item: Item) {
         dynamoDBMapper.save(item)
     }
 
-    fun getItem(type: String, tableName: String, itemId: String, storeName: String, storeId: String): Item? {
+    fun getItem(
+        type: String,
+        tableName: String,
+        itemId: String,
+        storeName: String,
+        storeId: String): Item? {
+
         validateInput(type, tableName)
         return dynamoDBMapper.load(Item::class.java, itemId)
     }
@@ -63,9 +69,9 @@ class DynamoAccessService(context: Context) {
             validateInput(type, tableName)
             val scanExpression = DynamoDBScanExpression().apply {
                 setLimit(limit)
-                if (lastEvalKey != null) {
-                    // pagination logic when in prod (parse lastEvalKey for exclusiveStartKey)
-                }
+//                if (lastEvalKey != null) {
+//                    // pagination logic when in prod (parse lastEvalKey for exclusiveStartKey)
+//                }
                 if (search.isNotEmpty()) {
                     filterExpression = "contains(searchName, :searchVal)"
                     withExpressionAttributeValues(mapOf(":searchVal" to AttributeValue(search)))
@@ -89,7 +95,9 @@ class DynamoAccessService(context: Context) {
 
     private fun validateInput(type: String, tableName: String) {
         val validPattern = Regex("^[a-zA-Z0-9_-]+$")
-        if (!validPattern.matches(type)) throw IllegalArgumentException("Invalid type parameter")
-        if (!validPattern.matches(tableName)) throw IllegalArgumentException("Invalid tableName parameter")
+        if (!validPattern.matches(type))
+            throw IllegalArgumentException("Invalid type parameter")
+        if (!validPattern.matches(tableName))
+            throw IllegalArgumentException("Invalid tableName parameter")
     }
 }

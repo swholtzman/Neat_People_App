@@ -53,7 +53,9 @@ fun ComingSoonPopup(
                         .fillMaxWidth(0.8f)
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.primary)
-                        .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(16.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.secondary,
+                            RoundedCornerShape(16.dp))
+
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -82,7 +84,10 @@ fun ComingSoonPopup(
                         text = "This is a concept app with a long way to go. " +
                                 "Items like this will be implemented soon! " +
                                 "Please try again another time.",
-                        style = MaterialTheme.typography.bodyMedium.copy(fontFamily = JostFontFamily),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontFamily = JostFontFamily
+                        ),
+
                         color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center
                     )
