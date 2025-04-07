@@ -41,6 +41,27 @@ android {
 
 dependencies {
 
+    implementation ("androidx.activity:activity-compose:1.8.0")
+    implementation ("androidx.compose.ui:ui:1.5.1")
+    implementation ("androidx.compose.material:material:1.5.1")
+    implementation ("androidx.compose.material:material-icons-extended:1.5.1")
+
+    // AWS Cognito SDK
+    implementation ("com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.22.0")
+
+    // AWS DynamoDB SDK
+    implementation ("com.amazonaws:aws-android-sdk-ddb:2.16.+")
+    implementation ("com.amazonaws:aws-android-sdk-ddb-mapper:2.16.+")
+
+    // Session persitence
+    implementation ("androidx.security:security-crypto:1.1.0-alpha06")
+
+    // Coroutines for asynchronous operations
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Compose / Lifecycle
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -49,6 +70,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+//    implementation(libs.androidx.security.crypto.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
