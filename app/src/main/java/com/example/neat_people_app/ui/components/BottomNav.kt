@@ -24,9 +24,9 @@ fun BottomNav(
 ) {
     val items = listOf(
         "content" to Icons.Default.Home,
-        "Analytics" to Icons.Default.BarChart,
-        "Orders" to Icons.Default.ShoppingCart,
-        "Profile" to Icons.Default.Person
+        "analytics" to Icons.Default.BarChart,
+        "orders" to Icons.Default.ShoppingCart,
+        "profile" to Icons.Default.Person
     )
 
     val secondaryOpacity = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)

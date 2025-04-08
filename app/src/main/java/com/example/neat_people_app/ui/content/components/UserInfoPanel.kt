@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
+import com.example.neat_people_app.ui.theme.JostFontFamily
 
 @Composable
 fun UserInfoPanel(userName: String) {
@@ -39,6 +40,7 @@ fun UserInfoPanel(userName: String) {
     ) {
         Text(
             text = userName,
+            fontFamily = JostFontFamily,
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onPrimary
         )
@@ -47,11 +49,14 @@ fun UserInfoPanel(userName: String) {
         ) {
             Text(
                 text = "Vendor",
+                fontFamily = JostFontFamily,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.tertiary
+
             )
             Text(
                 text = "Guest",
+                fontFamily = JostFontFamily,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
             )

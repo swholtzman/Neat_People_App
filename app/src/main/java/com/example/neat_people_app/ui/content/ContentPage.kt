@@ -8,33 +8,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.neat_people_app.data.db.DynamoAccessService
 import com.example.neat_people_app.ui.content.components.ButtonRow
 import com.example.neat_people_app.ui.content.components.ItemCard
-import com.example.neat_people_app.ui.content.components.MainDisplayBar
-import com.example.neat_people_app.ui.content.components.UserInfoPanel
 
 @Composable
-fun ContentPage(dynamoAccessService: DynamoAccessService, userName: String = "Unnamed User") {
-    val viewModel: ContentViewModel = viewModel(
-        factory = ContentViewModelFactory(dynamoAccessService)
-    )
-
+fun ContentPage(
+    navController: NavController,
+    viewModel: ContentViewModel,
+    userName: String
+) {
     val items = viewModel.items
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        MainDisplayBar()
-        UserInfoPanel(userName = userName)
-        ButtonRow()
+    PageWithBars(userName = userName) {
+        ButtonRow(onCreateClick = { navController.navigate("item_creation/new") })
         LazyColumn(
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(16.dp)
+            modifier = Modifier
+                .fillMaxSize()  // Uses all remaining space from the Box in PageWithBars
+                .padding(16.dp),
+            contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             items(items) { item ->
                 ItemCard(
                     item = item,
-                    onItemClick = { /* TODO: Navigate to create item page with item data */ }
+                    onItemClick = { navController.navigate("item_creation/${item.id}") }
                 )
             }
         }

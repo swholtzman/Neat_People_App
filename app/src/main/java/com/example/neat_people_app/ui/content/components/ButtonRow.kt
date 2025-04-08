@@ -3,10 +3,11 @@ package com.example.neat_people_app.ui.content.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,21 +21,21 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.neat_people_app.ui.theme.JostFontFamily
 
 @Composable
-fun ButtonRow() {
+fun ButtonRow(onCreateClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         // drop-menu button
         Button(
@@ -49,7 +50,11 @@ fun ButtonRow() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Items", color = MaterialTheme.colorScheme.onPrimary)
+                Text(
+                    "Items",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = JostFontFamily,
+                )
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = "Dropdown",
@@ -59,7 +64,12 @@ fun ButtonRow() {
         }
 
         // Right-side Buttons
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        )
+
+        {
             Button(
                 onClick = { /* TODO: Implement search logic */ },
                 modifier = Modifier.width(125.dp),
@@ -79,6 +89,7 @@ fun ButtonRow() {
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = "Search",
+                        fontFamily = JostFontFamily,
                         color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
                     )
                 }
@@ -86,16 +97,13 @@ fun ButtonRow() {
 
             Spacer(modifier = Modifier.width(2.dp))
 
-            // Filter Button with reduced size
-            IconButton(
-                onClick = { /* TODO: Implement filter logic */ },
+            Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .then(Modifier.defaultMinSize(1.dp, 1.dp))
-                    .background(MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(4.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                        RoundedCornerShape(4.dp))
+                    .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(4.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f), RoundedCornerShape(4.dp))
+                    .clickable { /* TODO: Implement filter logic */ },
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Tune,
@@ -107,16 +115,14 @@ fun ButtonRow() {
 
             Spacer(modifier = Modifier.width(2.dp))
 
-            // Plus Button with reduced size
-            IconButton(
-                onClick = { /* TODO: Navigate to creation page */ },
+            // plus button
+            Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .then(Modifier.defaultMinSize(1.dp, 1.dp))
-                    .background(MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(4.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                        RoundedCornerShape(4.dp))
+                    .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(4.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f), RoundedCornerShape(4.dp))
+                    .clickable { onCreateClick() },
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,

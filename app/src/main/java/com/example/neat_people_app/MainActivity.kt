@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,12 +18,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.neat_people_app.data.auth.CognitoAuthService
 import com.example.neat_people_app.data.db.DynamoAccessService
-import com.example.neat_people_app.ui.AuthPages
+import com.example.neat_people_app.ui.content.AuthPages
 import com.example.neat_people_app.ui.components.BottomNav
 import com.example.neat_people_app.ui.components.ComingSoonPopup
 import com.example.neat_people_app.ui.content.ContentPage
+import com.example.neat_people_app.ui.content.ContentViewModel
+import com.example.neat_people_app.ui.content.ContentViewModelFactory
+import com.example.neat_people_app.ui.content.ItemCreationPage
 import com.example.neat_people_app.ui.login.LoginViewModel
 import com.example.neat_people_app.ui.theme.NeatPeopleTheme
 import com.example.neat_people_app.ui.theme.ThemeViewModel
@@ -46,30 +56,73 @@ fun App() {
     val cognitoService = CognitoAuthService(context)
     val dynamoAccessService = DynamoAccessService(context)
 
-    val initialScreen = if (cognitoService.getSessionToken() != null) "content" else "landing"
-    var currentScreen by remember { mutableStateOf(initialScreen) }
+    val navController = rememberNavController()
+    val viewModel: ContentViewModel = viewModel(factory = ContentViewModelFactory(dynamoAccessService))
+    val userName = "Unnamed User" // Replace with actual username if available
     var showComingSoon by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        when (currentScreen) {
-            in listOf("landing", "login") -> {
-                val loginViewModel: LoginViewModel = viewModel(
-                    factory = LoginViewModelFactory(application, cognitoService)
-                )
+        NavHost(navController = navController, startDestination = "auth_check") {
+            composable("auth_check") {
+                LaunchedEffect(Unit) {
+                    if (cognitoService.getSessionToken() != null) {
+                        navController.navigate("content") {
+                            popUpTo("auth_check") { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate("landing") {
+                            popUpTo("auth_check") { inclusive = true }
+                        }
+                    }
+                }
+            }
+            composable("landing") {
                 AuthPages(
-                    currentScreen = currentScreen,
-                    onContinue = { currentScreen = "login" },
-                    loginViewModel = loginViewModel,
-                    onLoginSuccess = { currentScreen = "content" }
+                    currentScreen = "landing",
+                    onContinue = { navController.navigate("login") },
+                    loginViewModel = viewModel(factory = LoginViewModelFactory(application, cognitoService)),
+                    onLoginSuccess = { navController.navigate("content") }
                 )
             }
-            "content" -> ContentPage(dynamoAccessService = dynamoAccessService)
+            composable("login") {
+                AuthPages(
+                    currentScreen = "login",
+                    onContinue = { /* Not needed here */ },
+                    loginViewModel = viewModel(factory = LoginViewModelFactory(application, cognitoService)),
+                    onLoginSuccess = { navController.navigate("content") }
+                )
+            }
+            composable("content") {
+                ContentPage(
+                    navController = navController,
+                    viewModel = viewModel,
+                    userName = userName
+                )
+            }
+            composable(
+                route = "item_creation/{itemId}",
+                arguments = listOf(navArgument("itemId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val itemId = backStackEntry.arguments?.getString("itemId")
+                val item = if (itemId == "new") null else viewModel.items.find { it.id.toString() == itemId }
+                ItemCreationPage(
+                    viewModel = viewModel,
+                    item = item,
+                    onSave = { navController.popBackStack() },
+                    onCancel = { navController.popBackStack() },
+                    userName = userName
+                )
+            }
         }
 
-        if (currentScreen !in listOf("landing", "login")) {
+        // Observe the current destination to show/hide BottomNav
+        val currentDestination by navController.currentBackStackEntryAsState()
+        val currentScreen = currentDestination?.destination?.route ?: "auth_check"
+
+        if (currentScreen !in listOf("landing", "login", "auth_check")) {
             BottomNav(
                 currentScreen = currentScreen,
-                onScreenSelected = { newScreen -> currentScreen = newScreen },
+                onScreenSelected = { newScreen -> navController.navigate(newScreen) },
                 onComingSoonClick = { showComingSoon = true },
                 modifier = Modifier.align(Alignment.BottomCenter)
             )

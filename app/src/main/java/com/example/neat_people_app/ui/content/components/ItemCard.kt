@@ -32,11 +32,12 @@ fun ItemCard(item: Item, onItemClick: (Item) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp) // padding above card
+            .clickable { onItemClick(item) }
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(top = 15.dp), // padding above card
             horizontalArrangement = Arrangement.Start
         ) {
 

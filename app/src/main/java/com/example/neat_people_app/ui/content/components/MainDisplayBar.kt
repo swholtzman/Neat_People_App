@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
+import com.example.neat_people_app.ui.theme.JostFontFamily
 
 @Composable
 fun MainDisplayBar() {
@@ -35,6 +36,7 @@ fun MainDisplayBar() {
     ) {
         Text(
             text = "Content",
+            fontFamily = JostFontFamily,
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onPrimary
         )

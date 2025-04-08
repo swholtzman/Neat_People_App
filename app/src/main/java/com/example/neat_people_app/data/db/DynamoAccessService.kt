@@ -14,18 +14,9 @@ import com.example.neat_people_app.resources.Secrets
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URL
+import java.security.SecureRandom
 
 class DynamoAccessService(context: Context) {
-    fun testNetwork() {
-        try {
-            val url = URL("https://www.google.com")
-            val connection = url.openConnection()
-            connection.connect()
-            Log.d("NetworkTest", "Connected to Google successfully")
-        } catch (e: Exception) {
-            Log.e("NetworkTest", "Failed to connect: ${e.message}")
-        }
-    }
 
     private val credentialsProvider = CognitoCachingCredentialsProvider(
         context,
@@ -34,26 +25,45 @@ class DynamoAccessService(context: Context) {
     )
 
     private val dynamoDBClient = AmazonDynamoDBClient(credentialsProvider).apply {
-//        testNetwork()
         setRegion(Region.getRegion(Regions.fromName(Secrets.DYNAMO_DB_REGION)))
         Log.d("DynamoAccessService", "Using region: ${Secrets.DYNAMO_DB_REGION}")
     }
 
     private val dynamoDBMapper = DynamoDBMapper(dynamoDBClient)
 
-    fun createItem(item: Item) {
-        dynamoDBMapper.save(item)
+    suspend fun createItem(item: Item) {
+        withContext(Dispatchers.IO) {
+            try {
+                dynamoDBMapper.save(item)
+            } catch (e: Exception) {
+                Log.e("DynamoAccessService", "Failed to save item: ${e.message}", e)
+                throw e
+            }
+        }
+    }
+
+    suspend fun updateItem(item: Item) {
+        withContext(Dispatchers.IO) {
+            dynamoDBMapper.save(item)
+        }
+    }
+
+    suspend fun deleteItem(id: Int) {
+        withContext(Dispatchers.IO) {
+            val item = Item().apply { this.tableArea = "item"; this.id = id }
+            dynamoDBMapper.delete(item)
+        }
     }
 
     fun getItem(
         type: String,
         tableName: String,
-        itemId: String,
+        itemId: Int,
         storeName: String,
-        storeId: String): Item? {
-
+        storeId: String
+    ): Item? {
         validateInput(type, tableName)
-        return dynamoDBMapper.load(Item::class.java, itemId)
+        return dynamoDBMapper.load(Item::class.java, type, itemId) // Use tableArea and id
     }
 
     suspend fun getItems(
@@ -84,15 +94,6 @@ class DynamoAccessService(context: Context) {
         }
     }
 
-    fun updateItem(item: Item) {
-        dynamoDBMapper.save(item)
-    }
-
-    fun deleteItem(id: Int) {
-        val item = Item().apply { this.id = id }
-        dynamoDBMapper.delete(item)
-    }
-
     private fun validateInput(type: String, tableName: String) {
         val validPattern = Regex("^[a-zA-Z0-9_-]+$")
         if (!validPattern.matches(type))
@@ -100,4 +101,16 @@ class DynamoAccessService(context: Context) {
         if (!validPattern.matches(tableName))
             throw IllegalArgumentException("Invalid tableName parameter")
     }
+
+    suspend fun getNextId(tableArea: String): Int = withContext(Dispatchers.IO) {
+        val random = SecureRandom()
+        var newId: Int
+        do {
+            newId = random.nextInt(900000000) + 100000000 // 9-digit range
+            val existingItem = dynamoDBMapper.load(Item::class.java, tableArea, newId)
+        } while (existingItem != null) // Repeat if ID is taken
+        newId
+    }
+
+
 }

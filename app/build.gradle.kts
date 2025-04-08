@@ -41,7 +41,11 @@ android {
 
 dependencies {
 
+    // Compose / Lifecycle
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation ("androidx.activity:activity-compose:1.8.0")
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation ("androidx.compose.material3:material3:1.2.1")
     implementation ("androidx.compose.ui:ui:1.5.1")
     implementation ("androidx.compose.material:material:1.5.1")
     implementation ("androidx.compose.material:material-icons-extended:1.5.1")
@@ -53,14 +57,11 @@ dependencies {
     implementation ("com.amazonaws:aws-android-sdk-ddb:2.16.+")
     implementation ("com.amazonaws:aws-android-sdk-ddb-mapper:2.16.+")
 
-    // Session persitence
+    // Session persistence
     implementation ("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Coroutines for asynchronous operations
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-
-    // Compose / Lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -1,4 +1,4 @@
-package com.example.neat_people_app.ui
+package com.example.neat_people_app.ui.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

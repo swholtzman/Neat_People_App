@@ -28,71 +28,71 @@ fun ComingSoonPopup(
     isVisible: Boolean,
     onDismiss: () -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    if (isVisible) {
+    // AnimatedVisibility now controls the entire overlay
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = fadeIn(
+            animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+        ),
+        exit = fadeOut(
+            animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+        )
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                // This background now fades in/out with the popup
                 .background(Color.Black.copy(alpha = 0.40f))
                 .clickable(
-                    onClick = { onDismiss() },
+                    onClick = onDismiss,
                     indication = null,
-                    interactionSource = interactionSource
+                    interactionSource = remember { MutableInteractionSource() }
                 )
         ) {
-            AnimatedVisibility(
-                visible = isVisible,
-                enter = fadeIn(animationSpec =
-                    tween(durationMillis = 600, easing = FastOutSlowInEasing)),
-                exit = fadeOut(animationSpec =
-                    tween(durationMillis = 600, easing = FastOutSlowInEasing)),
-                modifier = Modifier.align(Alignment.Center)
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth(0.8f)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.primary)
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.secondary,
+                        RoundedCornerShape(16.dp)
+                    )
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.primary)
-                        .border(1.dp, MaterialTheme.colorScheme.secondary,
-                            RoundedCornerShape(16.dp))
-
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        IconButton(onClick = onDismiss) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Close",
-                                tint = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
+                    IconButton(onClick = onDismiss) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
                     }
-                    Text(
-                        text = "Coming Soon!",
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = JostFontFamily
-                        ),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "This is a concept app with a long way to go. " +
-                                "Items like this will be implemented soon! " +
-                                "Please try again another time.",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontFamily = JostFontFamily
-                        ),
-
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(50.dp))
                 }
+                Text(
+                    text = "Coming Soon!",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = JostFontFamily
+                    ),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "This is a concept app with a long way to go. \n" +
+                            "Features like this will be implemented soon! \n" +
+                            "Please try again another time.",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = JostFontFamily),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }
